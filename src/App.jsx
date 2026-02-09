@@ -53,6 +53,15 @@ export default function App() {
         />
 
         <Route
+          path="/projects/:projectId"
+          element={
+            <ProtectedRoute>
+              <Kanban />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
           path="/settings"
           element={
             <ProtectedRoute>

@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import api from "../api/axios";
 
 export default function Projects() {
+  const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [projects, setProjects] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -96,7 +98,11 @@ export default function Projects() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onOpen={() => navigate(`/projects/${project.id}`)}
+              />
             ))}
           </div>
         )}
@@ -184,9 +190,19 @@ export default function Projects() {
   );
 }
 
-function ProjectCard({ project }) {
+function ProjectCard({ project, onOpen }) {
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition cursor-pointer">
+    <div
+      className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition cursor-pointer"
+      onClick={onOpen}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          onOpen();
+        }
+      }}
+    >
       <div className="flex items-start justify-between mb-4">
         <div>
           <h3 className="text-lg font-bold text-gray-900">{project.name}</h3>
@@ -212,7 +228,13 @@ function ProjectCard({ project }) {
             />
           ))}
         </div>
-        <button className="text-blue-600 hover:text-blue-700 font-semibold text-sm">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpen();
+          }}
+          className="text-blue-600 hover:text-blue-700 font-semibold text-sm"
+        >
           View →
         </button>
       </div>
